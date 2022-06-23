@@ -44,7 +44,7 @@ def main():
             sentence = get_sentence(os.path.join(path, filename))
             audio_filename = filename.replace('.utt','.wav') # upc_ca_pep_203479.wav
             if sentence:
-                target_path = 'filtered_%s_wav'%locutor
+                target_path = 'upc_ca_%s_wav_22k_sil_pad'%locutor
                 target_path = wavs_path + target_path
                 source_filename = 'upc_ca_%s_wav_22k_sil/'%locutor+audio_filename
                 source_filename = wavs_path + source_filename
