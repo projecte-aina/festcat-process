@@ -106,7 +106,7 @@ def out(args, locutor, files):
         with open((args.wavs_path + fout), 'w') as out:
             for i in range(l):
                 f, sentence = files.pop()
-                out.write('%s|%s\n'%(f,sentence))
+                out.write('%s|%s\n'%(f.split("/")[-1].split(".")[-2],sentence))
     print(len(files))
 
 def out_long(args, locutor, files):

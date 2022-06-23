@@ -21,7 +21,7 @@ done
 mv upc_ca_${SPEAKER_NAME}_raw/recordings/*.wav  upc_ca_${SPEAKER_NAME}_wav/
 
 for f in upc_ca_${SPEAKER_NAME}_wav/*.wav; do
-t=${f##*/}; ffmpeg -i $f -ar 22050 upc_ca_pep_wav_22k/$t -v error < /dev/null; 
+t=${f##*/}; ffmpeg -i $f -ar 22050 upc_ca_${SPEAKER_NAME}_wav_22k/$t -v error < /dev/null; 
 done;
 
 for f in upc_ca_${SPEAKER_NAME}_wav_22k/*.wav; do 
@@ -35,8 +35,8 @@ done >> ${OUTPUT_CSV}
 
 python ${EXTRACT_PATH} --wavs-path ${WAVS_PATH} --utterance-path ${UTTERANCE_PATH} --locutors ${SPEAKER_NAME}
 
-for f in upc_ca_pep_wav_22k_sil/*.wav; do 
-t=${f##*/}; sox $f upc_ca_pep_wav_22k_sil_pad/$t pad 0 0.058; 
+for f in upc_ca_${SPEAKER_NAME}_wav_22k_sil/*.wav; do 
+t=${f##*/}; sox $f upc_ca_${SPEAKER_NAME}_wav_22k_sil_pad/$t pad 0 0.058; 
 done
 
 mv upc_ca_${SPEAKER_NAME}*  ${SPEAKER_NAME}
