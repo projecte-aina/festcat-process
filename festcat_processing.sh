@@ -39,6 +39,9 @@ for f in upc_ca_${SPEAKER_NAME}_wav_22k_sil/*.wav; do
 t=${f##*/}; sox $f upc_ca_${SPEAKER_NAME}_wav_22k_sil_pad/$t pad 0 0.058; 
 done
 
+rm -r upc_ca_${SPEAKER_NAME}_wav
+rm -r upc_ca_${SPEAKER_NAME}_wav_22k
+rm -r upc_ca_${SPEAKER_NAME}_wav_22k_sil
 mv upc_ca_${SPEAKER_NAME}*  ${SPEAKER_NAME}
 mv upc_${SPEAKER_NAME}* ${SPEAKER_NAME}
 mv ${SPEAKER_NAME}_* ${SPEAKER_NAME}
