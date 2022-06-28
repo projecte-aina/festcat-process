@@ -35,7 +35,7 @@ def main():
         rejected_duration = 0
         large_duration = 0
         total_duration = 0
-        tsv_name = "line_index_male.tsv"
+        tsv_name = "line_index_%s.tsv"%locutor
         tsv_path = tsv_path + tsv_name
 
         tsv_file = open(tsv_path)
