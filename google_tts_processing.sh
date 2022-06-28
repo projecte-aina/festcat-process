@@ -1,10 +1,10 @@
 #!/bin/sh
 
-export SPEAKER_NAME="male"
+export SPEAKER_NAME=...
 export OUTPUT_CSV="${SPEAKER_NAME}_sil_stats.csv"
-export EXTRACT_PATH="/home/usuaris/scratch/gerard.muniesa/extract_google_tts.py"
-export WAVS_PATH="/home/usuaris/scratch/gerard.muniesa/google_tts/"
-export TSV_PATH="/home/usuaris/scratch/gerard.muniesa/google_tts/"
+export EXTRACT_PATH=...
+export WAVS_PATH=...
+export TSV_PATH=...
 
 mkdir ${SPEAKER_NAME}
 
