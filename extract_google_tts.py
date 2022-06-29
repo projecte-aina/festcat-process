@@ -4,6 +4,7 @@ import json
 import argparse
 import logging
 import csv
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -44,14 +45,14 @@ def main():
         long_files = []
         for row in read_tsv:
             audio_filename = row[0] + ".wav"
-            logger.warning(f"Audio_filename {audio_filename}")
+            #logger.warning(f"Audio_filename {audio_filename}")
             sentence = row[-1]
             if sentence:
                 target_path = 'ca_es_%s_22k_sil_pad'%locutor
                 target_path = wavs_path + target_path
-                source_filename = 'ca_es_%s_22k_sil/'%locutor+audio_filename
+                source_filename = 'ca_es_%s_22k_sil/'%locutor+audio_filename ###
                 source_filename = wavs_path + source_filename
-                logger.warning(f"source_filename {source_filename}")
+                #logger.warning(f"source_filename {source_filename}")
                 total_duration += durations[audio_filename]
                 if os.path.isfile(source_filename):
                     if durations[audio_filename] < 10.0:
@@ -65,7 +66,19 @@ def main():
                     print(audio_filename)
             else:
                 rejected_duration += durations[audio_filename]
-        out(args, locutor, files)
+        
+        speakers_id = find_speakers_id(wavs_path + '%s_sil_stats.csv'%locutor)
+        for id in speakers_id:
+            speaker_file = files_spliter(files = files, speaker_id = id)
+            if len(speaker_file) == 0:
+                continue
+            else:
+                out(args, speaker_id = id, files = speaker_file)
+                #print(f"mv {wavs_path}ca_{id}_test.txt  {wavs_path}{locutor}")
+                #os.system(f"mv {wavs_path}ca_{id}_test.txt  {wavs_path}{locutor}")
+                #os.system(f"mv {wavs_path}ca_{id}_val.txt  {wavs_path}{locutor}")
+                #os.system(f"mv {wavs_path}ca_{id}_train.txt  {wavs_path}{locutor}")
+        #out(args, locutor, files)
         out_long(args, locutor, long_files)
         out_long_json(args, locutor, long_files)
         print(locutor, aggregate_duration/3600, 'hours')
@@ -92,11 +105,12 @@ def get_sentence(filename):
         print(filename, sentence)
         return None
 
-def out(args, locutor, files):
+def out(args, speaker_id, files):
 
-    outname_length = [('ca_%s_test.txt'%locutor,0),
-                      ('ca_%s_val.txt'%locutor,100),
-                      ('ca_%s_train.txt'%locutor,len(files)-100)]
+    #print(f"Length: {len(files)}")
+    outname_length = [('ca_%s_test.txt'%speaker_id,0),
+                      ('ca_%s_val.txt'%speaker_id,0),
+                      ('ca_%s_train.txt'%speaker_id,len(files))]
     l_sum = sum([el[1] for el in outname_length])
     if len(files) != l_sum:
         msg = 'train vs test val distribution wrong: %i'%l_sum
@@ -104,8 +118,8 @@ def out(args, locutor, files):
 
     for fout, l in outname_length:
         open((args.wavs_path + fout), mode= 'a').close()
-        logger.warning(f"fout: {fout}")
-        logger.warning(f"l: {l}")
+        #logger.warning(f"fout: {fout}")
+        #logger.warning(f"l: {l}")
         with open((args.wavs_path + fout), 'w') as out:
             for i in range(l):
                 f, sentence = files.pop()
@@ -134,6 +148,27 @@ def out_long_json(args, locutor, files):
     
     with open(outname_path, 'w') as out:
         json.dump({'session': interventions}, out, indent=2)
+
+def find_speakers_id(path_tsv):
+  durations = {}
+  for line in open(path_tsv).readlines():
+      d = line.split(',')
+      durations[d[0].split('/')[1]] = float(d[1])
+  keysList = list(durations.keys())
+
+  for index in range(len(keysList)):
+    keysList[index] = keysList[index].split("_")[1]
+  keysList = np.ndarray.tolist(np.unique(np.array(keysList)))
+  return keysList
+
+def files_spliter(files, speaker_id):
+  out_file = []
+  for element in files:
+   # print(element[0].split("/")[-1].split("_")[1])
+    if element[0].split("/")[-1].split("_")[1] == speaker_id:
+      out_file.append(element)
+  #print(out_file)
+  return out_file
 
 if __name__ == "__main__":
     main()

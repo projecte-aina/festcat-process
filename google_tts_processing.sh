@@ -21,7 +21,7 @@ t=${f##*/}; sox $f ca_es_${SPEAKER_NAME}_22k_sil/$t silence 1 0.02 0.1% reverse 
 done
 
 for f in ca_es_${SPEAKER_NAME}_22k_sil/*.wav; do 
-d=`ffprobe -i $f -show_entries format=duration -v quiet -of csv="p=0"`; 
+d=`ffprobe -i $f -show_entries format=duration -v quiet -of csv="p=0"`;
 echo $f,$d;
 done >> ${OUTPUT_CSV}
 
@@ -34,6 +34,6 @@ done
 rm -r ca_es_${SPEAKER_NAME}_22k
 rm -r ca_es_${SPEAKER_NAME}_22k_sil
 mv ca_es_${SPEAKER_NAME}*  ${SPEAKER_NAME}
-mv ca_${SPEAKER_NAME}* ${SPEAKER_NAME}
+mv *.txt  ${SPEAKER_NAME}
 mv line_index_${SPEAKER_NAME}* ${SPEAKER_NAME}
 mv ${SPEAKER_NAME}_* ${SPEAKER_NAME}
