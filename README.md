@@ -1,4 +1,4 @@
-# Festcat & Google TTS data processing
+# Festcat & Google TTS & Common-Voice data processing
 Scripts to process [festcat](http://festcat.talp.cat/devel.php) and [google_tts](http://openslr.org/69/) data, to make them compatible with training of modern TTS architectures
 
 ## Requirements
@@ -43,7 +43,7 @@ export TSV_PATH=...             # Path to where the "line_index_(speaker_id).tsv
 3) Run the shell script [google_tts_processing.sh](https://github.com/projecte-aina/festcat-process/blob/main/google_tts_processing.sh) from the directory where "ca_es_(speaker_id)" and "line_index_(speaker_id).tsv" are located.
 
 
-## Common-voice
+## Common-Voice
 ### Processing steps
 
 1) Clone this repository:
@@ -54,6 +54,15 @@ git clone git@github.com:projecte-aina/festcat-process.git
 2) Open the shell script [common_voice_processing.sh](https://github.com/projecte-aina/festcat-process/blob/main/common_voice_processing.sh) and modify the following variables:
 
 ```bash
+
+#SBATCH --job-name=...                              # Set a name for the Job
+#SBATCH -D .
+#SBATCH --output=.../common_voice.out               # Path to ".out" log
+#SBATCH --error=.../common_voice.err                # Path to ".err" log
+#SBATCH --gres=gpu:0
+#SBATCH --nodes=1
+#SBATCH -c 30
+#SBATCH --time=2-0:00:00
 
 export EXTRACT_PATH=".../extract_common_voice.py"   # Absolute path to the script "extract_common_voice.py".
 export TSV_PATH=".../validated.tsv"                 # Absolute path to the file "validated.tsv".

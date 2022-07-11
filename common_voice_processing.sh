@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name= ---
+#SBATCH --job-name=...
 #SBATCH -D .
 #SBATCH --output=.../common_voice.out
 #SBATCH --error=.../common_voice.err
