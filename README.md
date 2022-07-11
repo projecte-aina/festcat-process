@@ -41,3 +41,27 @@ export TSV_PATH=...             # Path to where the "line_index_(speaker_id).tsv
 ```
 
 3) Run the shell script [google_tts_processing.sh](https://github.com/projecte-aina/festcat-process/blob/main/google_tts_processing.sh) from the directory where "ca_es_(speaker_id)" and "line_index_(speaker_id).tsv" are located.
+
+
+## Common-voice
+### Processing steps
+
+1) Clone this repository:
+```bash
+git clone git@github.com:projecte-aina/festcat-process.git
+```
+
+2) Open the shell script [common_voice_processing.sh](https://github.com/projecte-aina/festcat-process/blob/main/common_voice_processing.sh) and modify the following variables:
+
+```bash
+
+export EXTRACT_PATH=".../extract_common_voice.py"   # Absolute path to the script "extract_common_voice.py".
+export TSV_PATH=".../validated.tsv"                 # Absolute path to the file "validated.tsv".
+export CV_PATH=".../ca/"                            # Path to where the "clips" folder is located. (It must end with /)
+export PROCESS_AUDIO="True"                         # "True" to process audio files, "False" otherwise.
+export N_P="50"                                     # Number of processes when processing audio files.
+export SUMMARY="True"                               # If set to "True" it outputs .tsv files with a summary of the dataset.
+export SPEAKERS_ID="[id_1, ..., id_n]"              # List with speakers name or ID to be processed. If no List if passed, it process all speakers.
+```
+
+3) Run the shell script [common_voice_processing.sh](https://github.com/projecte-aina/festcat-process/blob/main/common_voice_processing.sh).
