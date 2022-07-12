@@ -25,7 +25,7 @@ def main():
                        metavar='path',
                        type=str,
                        default='all',
-                       help='If True, it preprocess audiofiles and creates sil_stats.csv')
+                       help='List of speakers IDs to be processaed. If None, it will process all the speakers')
     my_parser.add_argument('--summary',
                        metavar='path',
                        type=bool,
