@@ -62,6 +62,7 @@ def main():
         subfolder_size = subfolder_size // n_p
         subfolder_rest = (len(fnmatch.filter(os.listdir("%sclips"%cv_path), '*.mp3')) % n_p)
         subprocess.call(["mkdir","%sall_clips_wav_22k_sil_pad"%cv_path])
+        process_index = []
         for i in range(n_p):
             if i == (n_p - 1):
                 subfolder_size = subfolder_size + subfolder_rest
@@ -71,16 +72,31 @@ def main():
             subprocess.call(["mkdir","%sclips_wav_%s_22k_sil"%(cv_path,str(i))])
             cmd = 'find '+'%sclips/'%cv_path +' -maxdepth 1 -type f '+'|head -%s|'%str(subfolder_size) +'xargs mv -t '+'"%sclips_%s"'%(cv_path, str(i))
             subprocess.call(cmd, shell=True)
+            process_index.append((cv_path,str(i)))
 
+
+
+        time_start = time.time()
+        # Create pool of workers
+        pool = multiprocessing.Pool(n_p)
+
+        # Map pool of workers to process
+        pool.starmap(func=AudioProcessing, iterable=process_index)
+
+        # Wait until workers complete execution
+        pool.close()
+
+        time_end = time.time()
+        print(f"Time elapsed: {round(time_end - time_start, 2)}s")
         # Creates n_p processes then starts them
-        for i in range(n_p):
-            p = multiprocessing.Process(target = AudioProcessing(cv_path = cv_path, sub_number = str(i)))
-            p.start()
-            processes.append(p)
+        #for i in range(n_p):
+        #    p = multiprocessing.Process(target = AudioProcessing(cv_path = cv_path, sub_number = str(i)))
+        #    p.start()
+        #    processes.append(p)
 
         # Joins all the processes 
-        for p in processes:
-            p.join()
+        #for p in processes:
+        #    p.join()
 
         join_sil_states(cv_path = cv_path, n_p = n_p)
 
@@ -174,16 +190,21 @@ def get_durations_dict(filename):
 def AudioProcessing(cv_path, sub_number):
         root_path = '/' + cv_path.split('/')[1]
         cmd_1 = "for f in %sclips_%s/*.mp3;"%(cv_path,sub_number) +" do t=${f%.mp3}.wav;"+" g=%sclips_wavs_%s/${t#%s*/clips_%s/}"%(cv_path,sub_number,root_path,sub_number) +"; mv $f $g; done"
-        subprocess.call(cmd_1, shell=True)
+        #subprocess.call(cmd_1, shell=True)
+        os.system(cmd_1)
         cmd_2 = "for f in %sclips_wavs_%s/*.wav; do t=${f##*/}; ffmpeg -i $f -ar 22050 %sclips_wav_%s_22k/$t -v error < /dev/null; done;"%(cv_path, sub_number , cv_path, sub_number)
-        subprocess.call(cmd_2, shell=True)
+        os.system(cmd_2)
+        #subprocess.call(cmd_2, shell=True)
         cmd_3 = "for f in %sclips_wav_%s_22k/*.wav; do t=${f##*/}; sox $f %sclips_wav_%s_22k_sil/$t"%(cv_path, sub_number , cv_path, sub_number) + " silence 1 0.02 0.1% reverse silence 1 0.02 0.1% reverse; done"
-        subprocess.call(cmd_3, shell=True)
+        os.system(cmd_3)
+        #subprocess.call(cmd_3, shell=True)
         cmd_4 = "for f in %sclips_wav_%s_22k_sil/*.wav; do d=`ffprobe -i $f -show_entries format=duration -v quiet -of csv="%(cv_path,sub_number) +'"p=0"'+"`; echo $f,$d; done >> %ssil_stats_%s.csv"%(cv_path,sub_number)
-        subprocess.call(cmd_4, shell=True)
+        os.system(cmd_4)
+        #subprocess.call(cmd_4, shell=True)
         #cmd_5 = "for f in %sclips_wav_%s_22k_sil/*.wav; do t=${f##*/}; sox $f %sclips_wav_%s_22k_sil_pad/$t pad 0 0.058; done"%(cv_path, sub_number , cv_path, sub_number)
         cmd_5 = "for f in %sclips_wav_%s_22k_sil/*.wav; do t=${f##*/}; sox $f %sall_clips_wav_22k_sil_pad/$t pad 0 0.058; done"%(cv_path, sub_number , cv_path)
-        subprocess.call(cmd_5, shell=True)
+        #subprocess.call(cmd_5, shell=True)
+        os.system(cmd_5)
         #shutil.rmtree("%sclips_wavs"%cv_path)
         #shutil.rmtree("%sclips_wav_22k"%cv_path)
         #shutil.rmtree("%sclips_wav_22k_sil"%cv_path)
